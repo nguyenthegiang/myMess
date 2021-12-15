@@ -36,15 +36,17 @@ class Auth with ChangeNotifier {
     return null;
   }
 
-  //getter cho userId (dùng khi add Favorite)
+  //getter cho userId
   String? get userId {
     return _userId;
   }
 
   /*Sign up:
   Hướng dẫn: https://firebase.google.com/docs/reference/rest/auth#section-create-email-password */
-  Future<void> signup(String email, String password) async {
-    //phải return để cái loading spinner hoạt động bình thường đc
+  Future<void> signup(String email, String password, String username) async {
+    //add vào table User
+
+    //add vào table Authentication
     return _authenticate(email, password, 'signUp');
   }
 

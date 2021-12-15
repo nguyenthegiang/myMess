@@ -104,6 +104,7 @@ class _AuthCardState extends State<AuthCard> {
   Map<String, String> _authData = {
     'email': '',
     'password': '',
+    'username': '',
   };
   var _isLoading = false;
   final _passwordController = TextEditingController();
@@ -151,6 +152,7 @@ class _AuthCardState extends State<AuthCard> {
         await Provider.of<Auth>(context, listen: false).signup(
           _authData['email'] as String,
           _authData['password'] as String,
+          _authData['username'] as String,
         );
       }
     } on HttpException catch (error) {
@@ -242,7 +244,7 @@ class _AuthCardState extends State<AuthCard> {
                     _authData['password'] = value as String;
                   },
                 ),
-                //Nếu là signup thì phải thêm confirm password
+                //Nếu là signup thì phải thêm confirm password và username
                 if (_authMode == AuthMode.Signup)
                   TextFormField(
                     enabled: _authMode == AuthMode.Signup,
@@ -256,6 +258,21 @@ class _AuthCardState extends State<AuthCard> {
                           }
                         : null,
                   ),
+                //input username
+                TextFormField(
+                  enabled: _authMode == AuthMode.Signup,
+                  decoration: InputDecoration(labelText: 'Username'),
+                  validator: _authMode == AuthMode.Signup
+                      ? (value) {
+                          if (value!.isEmpty) {
+                            return 'Username must not be empty!';
+                          }
+                        }
+                      : null,
+                  onSaved: (value) {
+                    _authData['username'] = value as String;
+                  },
+                ),
                 SizedBox(
                   height: 20,
                 ),
