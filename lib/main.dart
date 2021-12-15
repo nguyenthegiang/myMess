@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import './screens/auth_screen.dart';
 import './providers/auth.dart';
 import './screens/splash_screen.dart';
+import './screens/home-screen.dart';
 
 void main() {
   runApp(const MyApp());
@@ -29,11 +30,7 @@ class MyApp extends StatelessWidget {
             fontFamily: 'Lato',
           ),
           home: auth.isAuth
-              ? Scaffold(
-                  body: Container(
-                    child: Text('hi'),
-                  ),
-                )
+              ? HomeScreen()
               : FutureBuilder(
                   future: auth.tryAutoLogin(),
                   builder: (ctx, authResultSnapshot) =>
