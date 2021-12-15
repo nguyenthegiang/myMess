@@ -42,6 +42,11 @@ class Auth with ChangeNotifier {
     return _userId;
   }
 
+  //getter cho username
+  String? get username {
+    return _username;
+  }
+
   /*Sign up:
   Hướng dẫn: https://firebase.google.com/docs/reference/rest/auth#section-create-email-password */
   Future<void> signup(String email, String password) async {
@@ -224,6 +229,7 @@ class Auth with ChangeNotifier {
     _token = null;
     _userId = null;
     _expiryDate = null;
+    _username = null;
 
     /*nếu là trg hợp ng dùng chọn logout -> nếu login vào lại thì sẽ bị có 2 
     timer chạy cùng lúc -> phải xóa timer đi trc khi logout*/
@@ -251,6 +257,6 @@ class Auth with ChangeNotifier {
     final timeToExpiry = _expiryDate!.difference(DateTime.now()).inSeconds;
     /*dùng class Timer trong library dart:async để set timer, truyền vào 1 
     Duration để expire và 1 function để thực hiện khi expire*/
-    _authTimer = Timer(Duration(seconds: 10), logout);
+    _authTimer = Timer(Duration(seconds: timeToExpiry), logout);
   }
 }

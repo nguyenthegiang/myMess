@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
+
 import 'package:provider/provider.dart';
+
+import '../providers/auth.dart';
+import '../widgets/app_drawer.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -38,6 +42,25 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold();
+    //lấy username để hiển thị
+    final username = Provider.of<Auth>(context).username;
+
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('MyMess - $username'),
+        actions: [
+          //Nhấn nút này để chuyển sang NewMessageScreen
+          IconButton(
+            onPressed: () {},
+            icon: const Icon(Icons.edit_sharp),
+            tooltip: 'Tạo tin nhắn mới',
+          ),
+        ],
+      ),
+      drawer: AppDrawer(),
+      body: Container(
+        child: Text('hi'),
+      ),
+    );
   }
 }
