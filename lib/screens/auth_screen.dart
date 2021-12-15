@@ -147,6 +147,8 @@ class _AuthCardState extends State<AuthCard> {
           _authData['email'] as String,
           _authData['password'] as String,
         );
+        //get username
+        Provider.of<Auth>(context, listen: false).getUsername();
       } else {
         // Sign user up
         await Provider.of<Auth>(context, listen: false).signup(

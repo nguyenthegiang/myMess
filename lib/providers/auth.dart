@@ -16,7 +16,7 @@ class Auth with ChangeNotifier {
   String? _userId;
   //timer để tự động logout
   Timer? _authTimer;
-  String? username;
+  String? _username;
 
   /* Kiểm tra xem đã login chưa, dùng cho main.dart;
   Rule: nếu có token và token chưa expire thì là login rồi */
@@ -62,6 +62,9 @@ class Auth with ChangeNotifier {
           'username': username,
         }),
       );
+
+      //gán vào attribute
+      _username = username;
     } catch (error) {
       print(error);
       rethrow;
@@ -72,6 +75,37 @@ class Auth with ChangeNotifier {
   Hướng dẫn: https://firebase.google.com/docs/reference/rest/auth#section-sign-in-email-password */
   Future<void> login(String email, String password) async {
     return _authenticate(email, password, 'signInWithPassword');
+  }
+
+  /* Function này để lấy Username từ Table User sau khi Login */
+  Future<void> getUsername() async {
+    //add vào table User
+    final filterString = 'orderBy="userID"&equalTo="$_userId"';
+    final url =
+        'https://my-mess-39d32-default-rtdb.firebaseio.com/user.json?auth=$_token&$filterString';
+    try {
+      final response = await http.get(
+        Uri.parse(url),
+      );
+
+      //decode data
+      final extractedData = json.decode(response.body) as Map<String, dynamic>?;
+
+      //null thì return luôn
+      if (extractedData == null) {
+        return;
+      }
+
+      //gán vào attribute
+      extractedData.forEach((id, data) {
+        _username = data['username'];
+      });
+
+      notifyListeners();
+    } catch (error) {
+      print(error);
+      rethrow;
+    }
   }
 
   /* Optional: vì 2 function login và signup có code tương tự -> có thể dùng
