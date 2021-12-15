@@ -70,6 +70,16 @@ class Auth with ChangeNotifier {
 
       //gán vào attribute
       _username = username;
+
+      notifyListeners();
+
+      //Lưu username vào LocalStorage (với SharedPreferences) để AutoLogin
+      final prefs = await SharedPreferences.getInstance();
+      final usernameData = json.encode({
+        'username': _username,
+      });
+      //lưu trữ theo kiểu key-data
+      prefs.setString('usernameData', usernameData);
     } catch (error) {
       print(error);
       rethrow;
@@ -107,6 +117,14 @@ class Auth with ChangeNotifier {
       });
 
       notifyListeners();
+
+      //Lưu username vào LocalStorage (với SharedPreferences) để AutoLogin
+      final prefs = await SharedPreferences.getInstance();
+      final usernameData = json.encode({
+        'username': _username,
+      });
+      //lưu trữ theo kiểu key-data
+      prefs.setString('usernameData', usernameData);
     } catch (error) {
       print(error);
       rethrow;
@@ -201,7 +219,11 @@ class Auth with ChangeNotifier {
     //extract user data: lấy String có key là 'userData' và decode sang Map
     final extractedUserData = json.decode(prefs.getString('userData') as String)
         as Map<String, dynamic>;
-    //Sửa so với vid: cái này phải là dynamic chứ ko phải Object ko sẽ bị Exception
+
+    //thêm username nữa
+    final extractedUsernameData =
+        json.decode(prefs.getString('usernameData') as String)
+            as Map<String, dynamic>;
 
     //kiểm tra xem data có valid ko
     final expiryDate =
@@ -215,6 +237,8 @@ class Auth with ChangeNotifier {
     _token = extractedUserData['token'] as String;
     _userId = extractedUserData['userId'] as String;
     _expiryDate = expiryDate;
+    //username nữa
+    _username = extractedUsernameData['username'] as String;
 
     notifyListeners();
 
@@ -242,8 +266,7 @@ class Auth with ChangeNotifier {
 
     /* Xóa data trong SharedPreferences đi kẻo nó lại tự login lại */
     final prefs = await SharedPreferences.getInstance();
-    //prefs.remove('userData'); //xóa 1 data nhất định
-    prefs.clear(); //xóa hết: dùng cx đc vì mình chỉ có 1 cái
+    prefs.clear(); //xóa hết
   }
 
   //Tự động log out sau 1 thời gian (khi token expire)
