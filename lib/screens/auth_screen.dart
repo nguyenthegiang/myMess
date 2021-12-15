@@ -64,7 +64,7 @@ class AuthScreen extends StatelessWidget {
                         ],
                       ),
                       child: Text(
-                        'MyShop',
+                        'MyMess',
                         style: TextStyle(
                           /* Sửa cách truy cập vào Theme Color do khác version */
                           color: Colors.white,
@@ -152,6 +152,9 @@ class _AuthCardState extends State<AuthCard> {
         await Provider.of<Auth>(context, listen: false).signup(
           _authData['email'] as String,
           _authData['password'] as String,
+        );
+        //add username
+        Provider.of<Auth>(context, listen: false).addUsername(
           _authData['username'] as String,
         );
       }
@@ -209,7 +212,7 @@ class _AuthCardState extends State<AuthCard> {
       ),
       elevation: 8.0,
       child: Container(
-        height: _authMode == AuthMode.Signup ? 320 : 260,
+        height: _authMode == AuthMode.Signup ? 390 : 260,
         constraints:
             BoxConstraints(minHeight: _authMode == AuthMode.Signup ? 320 : 260),
         width: deviceSize.width * 0.75,
@@ -258,21 +261,22 @@ class _AuthCardState extends State<AuthCard> {
                           }
                         : null,
                   ),
-                //input username
-                TextFormField(
-                  enabled: _authMode == AuthMode.Signup,
-                  decoration: InputDecoration(labelText: 'Username'),
-                  validator: _authMode == AuthMode.Signup
-                      ? (value) {
-                          if (value!.isEmpty) {
-                            return 'Username must not be empty!';
+                if (_authMode == AuthMode.Signup)
+                  //input username
+                  TextFormField(
+                    enabled: _authMode == AuthMode.Signup,
+                    decoration: InputDecoration(labelText: 'Username'),
+                    validator: _authMode == AuthMode.Signup
+                        ? (value) {
+                            if (value!.isEmpty) {
+                              return 'Username must not be empty!';
+                            }
                           }
-                        }
-                      : null,
-                  onSaved: (value) {
-                    _authData['username'] = value as String;
-                  },
-                ),
+                        : null,
+                    onSaved: (value) {
+                      _authData['username'] = value as String;
+                    },
+                  ),
                 SizedBox(
                   height: 20,
                 ),

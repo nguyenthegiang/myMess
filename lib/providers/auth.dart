@@ -16,6 +16,7 @@ class Auth with ChangeNotifier {
   String? _userId;
   //timer để tự động logout
   Timer? _authTimer;
+  String? username;
 
   /* Kiểm tra xem đã login chưa, dùng cho main.dart;
   Rule: nếu có token và token chưa expire thì là login rồi */
@@ -43,11 +44,28 @@ class Auth with ChangeNotifier {
 
   /*Sign up:
   Hướng dẫn: https://firebase.google.com/docs/reference/rest/auth#section-create-email-password */
-  Future<void> signup(String email, String password, String username) async {
-    //add vào table User
-
+  Future<void> signup(String email, String password) async {
     //add vào table Authentication
     return _authenticate(email, password, 'signUp');
+  }
+
+  /* Function này để add Username vào Table User sau khi SignUp */
+  Future<void> addUsername(String username) async {
+    //add vào table User
+    final url =
+        'https://my-mess-39d32-default-rtdb.firebaseio.com/user.json?auth=$_token';
+    try {
+      final response = await http.post(
+        Uri.parse(url),
+        body: json.encode({
+          'userID': _userId,
+          'username': username,
+        }),
+      );
+    } catch (error) {
+      print(error);
+      rethrow;
+    }
   }
 
   /* Login:
@@ -199,6 +217,6 @@ class Auth with ChangeNotifier {
     final timeToExpiry = _expiryDate!.difference(DateTime.now()).inSeconds;
     /*dùng class Timer trong library dart:async để set timer, truyền vào 1 
     Duration để expire và 1 function để thực hiện khi expire*/
-    _authTimer = Timer(Duration(seconds: timeToExpiry), logout);
+    _authTimer = Timer(Duration(seconds: 10), logout);
   }
 }
