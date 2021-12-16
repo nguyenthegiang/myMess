@@ -70,7 +70,14 @@ class _NewMessageScreenState extends State<NewMessageScreen> {
           listen: false,
         ).getUserIdByUsername(_messageData['receiverUsername'] as String);
 
-        print(_messageData['receiverID']);
+        //Add Message vào DB
+        await Provider.of<MessageProvider>(
+          context,
+          listen: false,
+        ).addMessage(
+          _messageData['receiverID'] as String,
+          _messageData['messageContent'] as String,
+        );
       } catch (error) {
         //hiển thị thông báo lỗi
         const errorMessage =

@@ -50,4 +50,24 @@ class MessageProvider with ChangeNotifier {
       rethrow;
     }
   }
+
+  /* Function để tạo 1 tin nhắn mới */
+  Future<void> addMessage(String receiverID, String messageContent) async {
+    final url =
+        'https://my-mess-39d32-default-rtdb.firebaseio.com/message.json?auth=$authToken';
+    try {
+      final response = await http.post(
+        Uri.parse(url),
+        body: json.encode({
+          'messageContent': messageContent,
+          'senderID': userId,
+          'receiverID': receiverID,
+          'timeStamp': DateTime.now().toIso8601String(),
+        }),
+      );
+    } catch (error) {
+      print(error);
+      rethrow;
+    }
+  }
 }
