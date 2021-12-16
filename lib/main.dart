@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:my_mess/screens/new_message_screen.dart';
 import 'package:provider/provider.dart';
 
 import './screens/auth_screen.dart';
@@ -39,6 +40,9 @@ class MyApp extends StatelessWidget {
                           ? SplashScreen()
                           : AuthScreen(),
                 ),
+          routes: {
+            NewMessageScreen.routeName: (ctx) => NewMessageScreen(),
+          },
         ),
       ),
     );

@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 
 import '../providers/auth.dart';
 import '../widgets/app_drawer.dart';
+import '../screens/new_message_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -51,7 +52,9 @@ class _HomeScreenState extends State<HomeScreen> {
           actions: [
             //Nhấn nút này để chuyển sang NewMessageScreen
             IconButton(
-              onPressed: () {},
+              onPressed: () {
+                Navigator.of(context).pushNamed(NewMessageScreen.routeName);
+              },
               icon: const Icon(Icons.edit_sharp),
               tooltip: 'Tạo tin nhắn mới',
             ),
@@ -60,7 +63,7 @@ class _HomeScreenState extends State<HomeScreen> {
         drawer: AppDrawer(),
         body: ListView(
           children: [
-            //Searchbox
+            //Searchbox - Not implemented yet
             Padding(
               padding: const EdgeInsets.symmetric(
                 horizontal: 10,
@@ -95,7 +98,6 @@ class _HomeScreenState extends State<HomeScreen> {
                             AssetImage('assets/images/default-avatar.png'),
                       ),
                       trailing: Icon(Icons.check_circle),
-                      //style: ,
                     ),
                   ),
                   Card(
@@ -108,7 +110,6 @@ class _HomeScreenState extends State<HomeScreen> {
                             AssetImage('assets/images/default-avatar.png'),
                       ),
                       trailing: Icon(Icons.check_circle),
-                      //style: ,
                     ),
                   ),
                 ],
