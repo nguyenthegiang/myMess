@@ -46,21 +46,75 @@ class _HomeScreenState extends State<HomeScreen> {
     final username = Provider.of<Auth>(context).username;
 
     return Scaffold(
-      appBar: AppBar(
-        title: Text('MyMess - $username'),
-        actions: [
-          //Nhấn nút này để chuyển sang NewMessageScreen
-          IconButton(
-            onPressed: () {},
-            icon: const Icon(Icons.edit_sharp),
-            tooltip: 'Tạo tin nhắn mới',
-          ),
-        ],
-      ),
-      drawer: AppDrawer(),
-      body: Container(
-        child: Text('hi'),
-      ),
-    );
+        appBar: AppBar(
+          title: Text('MyMess - $username'),
+          actions: [
+            //Nhấn nút này để chuyển sang NewMessageScreen
+            IconButton(
+              onPressed: () {},
+              icon: const Icon(Icons.edit_sharp),
+              tooltip: 'Tạo tin nhắn mới',
+            ),
+          ],
+        ),
+        drawer: AppDrawer(),
+        body: ListView(
+          children: [
+            //Searchbox
+            Padding(
+              padding: const EdgeInsets.symmetric(
+                horizontal: 10,
+                vertical: 8,
+              ),
+              child: TextField(
+                decoration: InputDecoration(
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.all(Radius.circular(50)),
+                  ),
+                  hintText: 'Tìm kiếm',
+                  prefixIcon: Icon(Icons.search),
+                ),
+              ),
+            ),
+
+            /*Message List - sau này chuyển thành ListView.builder và 
+            ListTile tách ra Widget riêng*/
+            Container(
+              height: MediaQuery.of(context).size.height -
+                  MediaQuery.of(context).padding.top -
+                  150,
+              child: ListView(
+                children: [
+                  Card(
+                    elevation: 5,
+                    child: ListTile(
+                      title: Text('Nguyen The Giang'),
+                      subtitle: Text('Message sent'),
+                      leading: CircleAvatar(
+                        backgroundImage:
+                            AssetImage('assets/images/default-avatar.png'),
+                      ),
+                      trailing: Icon(Icons.check_circle),
+                      //style: ,
+                    ),
+                  ),
+                  Card(
+                    elevation: 5,
+                    child: ListTile(
+                      title: Text('Nguyen The Giang'),
+                      subtitle: Text('Message sent'),
+                      leading: CircleAvatar(
+                        backgroundImage:
+                            AssetImage('assets/images/default-avatar.png'),
+                      ),
+                      trailing: Icon(Icons.check_circle),
+                      //style: ,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ));
   }
 }
