@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:my_mess/providers/message_provider.dart';
 import 'package:my_mess/screens/new_message_screen.dart';
 import 'package:provider/provider.dart';
 
@@ -21,6 +22,14 @@ class MyApp extends StatelessWidget {
         /* Provider cho auth */
         ChangeNotifierProvider(
           create: (ctx) => Auth(),
+        ),
+        /* Provider cho Message */
+        ChangeNotifierProxyProvider<Auth, MessageProvider>(
+          create: (_) => MessageProvider('', ''),
+          update: (ctx, auth, previousMessageProvider) => MessageProvider(
+            auth.token,
+            auth.userId,
+          ),
         ),
       ],
       child: Consumer<Auth>(
