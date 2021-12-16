@@ -70,6 +70,11 @@ class _NewMessageScreenState extends State<NewMessageScreen> {
           listen: false,
         ).getUserIdByUsername(_messageData['receiverUsername'] as String);
 
+        //Nếu ko tìm đc receiverID thì có lỗi khi nhập tên ng dùng -> thông báo
+        if (_messageData['receiverID'] == '') {
+          throw Exception();
+        }
+
         //Add Message vào DB
         await Provider.of<MessageProvider>(
           context,
@@ -174,14 +179,17 @@ class _NewMessageScreenState extends State<NewMessageScreen> {
                         left: 10,
                         bottom: 6,
                       ),
-                      child: IconButton(
-                        onPressed: _submit,
-                        icon: Icon(
-                          Icons.send,
-                          size: 35,
-                          color: Color.fromRGBO(31, 105, 36, 1),
-                        ),
-                      ),
+                      //khi đang load thì nút submit chuyển thành loading spinner
+                      child: _isLoading
+                          ? CircularProgressIndicator()
+                          : IconButton(
+                              onPressed: _submit,
+                              icon: Icon(
+                                Icons.send,
+                                size: 35,
+                                color: Color.fromRGBO(31, 105, 36, 1),
+                              ),
+                            ),
                     ),
                   ],
                 ),
