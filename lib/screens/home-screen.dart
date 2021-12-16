@@ -61,61 +61,64 @@ class _HomeScreenState extends State<HomeScreen> {
           ],
         ),
         drawer: AppDrawer(),
-        body: ListView(
-          children: [
-            //Searchbox - Not implemented yet
-            Padding(
-              padding: const EdgeInsets.symmetric(
-                horizontal: 10,
-                vertical: 8,
-              ),
-              child: TextField(
-                decoration: InputDecoration(
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.all(Radius.circular(50)),
+        body: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: ListView(
+            children: [
+              //Searchbox - Not implemented yet
+              Padding(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 10,
+                  vertical: 8,
+                ),
+                child: TextField(
+                  decoration: InputDecoration(
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.all(Radius.circular(50)),
+                    ),
+                    hintText: 'Tìm kiếm',
+                    prefixIcon: Icon(Icons.search),
                   ),
-                  hintText: 'Tìm kiếm',
-                  prefixIcon: Icon(Icons.search),
                 ),
               ),
-            ),
 
-            /*Message List - sau này chuyển thành ListView.builder và 
-            ListTile tách ra Widget riêng*/
-            Container(
-              height: MediaQuery.of(context).size.height -
-                  MediaQuery.of(context).padding.top -
-                  150,
-              child: ListView(
-                children: [
-                  Card(
-                    elevation: 5,
-                    child: ListTile(
-                      title: Text('Nguyen The Giang'),
-                      subtitle: Text('Message sent'),
-                      leading: CircleAvatar(
-                        backgroundImage:
-                            AssetImage('assets/images/default-avatar.png'),
+              /*Message List - sau này chuyển thành ListView.builder và 
+              ListTile tách ra Widget riêng*/
+              Container(
+                height: MediaQuery.of(context).size.height -
+                    MediaQuery.of(context).padding.top -
+                    150,
+                child: ListView(
+                  children: [
+                    Card(
+                      elevation: 5,
+                      child: ListTile(
+                        title: Text('Nguyen The Giang'),
+                        subtitle: Text('Message sent'),
+                        leading: CircleAvatar(
+                          backgroundImage:
+                              AssetImage('assets/images/default-avatar.png'),
+                        ),
+                        trailing: Icon(Icons.check_circle),
                       ),
-                      trailing: Icon(Icons.check_circle),
                     ),
-                  ),
-                  Card(
-                    elevation: 5,
-                    child: ListTile(
-                      title: Text('Nguyen The Giang'),
-                      subtitle: Text('Message sent'),
-                      leading: CircleAvatar(
-                        backgroundImage:
-                            AssetImage('assets/images/default-avatar.png'),
+                    Card(
+                      elevation: 5,
+                      child: ListTile(
+                        title: Text('Nguyen The Giang'),
+                        subtitle: Text('Message sent'),
+                        leading: CircleAvatar(
+                          backgroundImage:
+                              AssetImage('assets/images/default-avatar.png'),
+                        ),
+                        trailing: Icon(Icons.check_circle),
                       ),
-                      trailing: Icon(Icons.check_circle),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ));
   }
 }
