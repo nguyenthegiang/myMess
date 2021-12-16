@@ -94,7 +94,7 @@ class Auth with ChangeNotifier {
 
   /* Function này để lấy Username từ Table User sau khi Login */
   Future<void> getUsername() async {
-    //add vào table User
+    //get từ table User
     final filterString = 'orderBy="userID"&equalTo="$_userId"';
     final url =
         'https://my-mess-39d32-default-rtdb.firebaseio.com/user.json?auth=$_token&$filterString';
