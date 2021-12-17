@@ -209,6 +209,10 @@ class MessageProvider with ChangeNotifier {
   /* Lấy những tin nhắn chung giữa mình và 1 ng cụ thể để hiển thị trong
   MessageDetailScreen */
   Future<void> getPersonalMessages(String friendId) async {
+    //Clear list message trc khi add thêm vào
+    receivedMessages.clear();
+    sentMessages.clear();
+
     //Lấy list những Message friend gửi
     String filterString = 'orderBy="senderID"&equalTo="$friendId"';
     String url =
