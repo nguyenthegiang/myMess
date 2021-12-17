@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
 import '../models/message.dart';
+import '../models/user.dart';
 
 class MessageProvider with ChangeNotifier {
   //String để lưu giữ Token khi Authentication
@@ -72,7 +73,7 @@ class MessageProvider with ChangeNotifier {
   }
 
   /* Function để lấy những list người đã nhắn tin với mình -> Hiển thị List Message */
-  Future<List<String>> getFriends() async {
+  Future<List<User>> getFriends() async {
     //list lưu những message tới mình hoặc mình gửi đi -> từ đó lọc ra friend
     List<Message> listMess = [];
 
@@ -82,10 +83,39 @@ class MessageProvider with ChangeNotifier {
     //Lấy những Message có mình là receiver
     listMess.addAll(await getMessages(isSender: false));
 
-    //list những ng đã nhắn tin vs mình
-    List<String> friendList = [];
+    //list ID của những ng đã nhắn tin vs mình
+    List<String> friendIDList = [];
 
-    print(listMess[1]);
+    //từ List message lọc ra list friends ID
+    listMess.forEach((element) {
+      /*với mỗi message trong list, xem xem nếu mình là sender thì lấy ID của
+      receiver, và ngược lại;*/
+      String friendID = '';
+      if (element.receiverId == userId) {
+        friendID = element.senderId;
+      } else {
+        friendID = element.receiverId;
+      }
+
+      /*Nhưng nếu ID đó đã có trong friendIDlist rồi
+      thì thôi (trùng), còn chưa có thì thêm vào*/
+      if (!friendIDList.contains(friendID)) {
+        friendIDList.add(friendID);
+      }
+    });
+
+    //List những ng đã nhắn tin vs mình
+    List<User> friendList = [];
+
+    /*với mỗi ID trong friendIDList thì tìm ra username tương ứng và thêm vào
+    friendList*/
+    friendIDList.forEach((userID) async {
+      String username = await getUsernameByUserID(userID);
+      friendList.add(User(
+        userID: userID,
+        username: username,
+      ));
+    });
 
     return friendList;
   }
@@ -127,6 +157,40 @@ class MessageProvider with ChangeNotifier {
       });
 
       return listMess;
+    } catch (error) {
+      print(error);
+      rethrow;
+    }
+  }
+
+  /* function để lấy username dựa theo ID */
+  Future<String> getUsernameByUserID(String userID) async {
+    //get từ table User
+    final filterString = 'orderBy="userID"&equalTo="$userID"';
+    final url =
+        'https://my-mess-39d32-default-rtdb.firebaseio.com/user.json?auth=$authToken&$filterString';
+    try {
+      final response = await http.get(
+        Uri.parse(url),
+      );
+
+      //decode data
+      final extractedData = json.decode(response.body) as Map<String, dynamic>?;
+
+      //null thì return luôn
+      if (extractedData == null) {
+        return '';
+      }
+
+      //lưu username lấy đc vào đây
+      String username = '';
+
+      //gán vào attribute
+      extractedData.forEach((id, data) {
+        username = data['username'];
+      });
+
+      return username;
     } catch (error) {
       print(error);
       rethrow;

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:my_mess/models/user.dart';
 
 import 'package:provider/provider.dart';
 
@@ -15,15 +16,15 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  //Biến để cho didChangeDependencies() chỉ chạy 1 lần thôi
-  var _isInit = true;
-
   //function để refresh lại list friends
   Future<void> _refreshFriendList(BuildContext context) async {
-    await Provider.of<MessageProvider>(
+    List<User> friends = await Provider.of<MessageProvider>(
       context,
       listen: false,
     ).getFriends();
+    //Lỗi: list rỗng
+    Future.delayed(Duration.zero);
+    print(friends);
   }
 
   @override
