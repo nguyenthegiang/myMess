@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:my_mess/providers/message_provider.dart';
+import 'package:my_mess/screens/message_detail_screen.dart';
 import 'package:my_mess/screens/new_message_screen.dart';
 import 'package:provider/provider.dart';
 
@@ -54,6 +55,7 @@ class MyApp extends StatelessWidget {
                 ),
           routes: {
             NewMessageScreen.routeName: (ctx) => NewMessageScreen(),
+            MessageDetailScreen.routeName: (ctx) => MessageDetailScreen(),
           },
         ),
       ),
