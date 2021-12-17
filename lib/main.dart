@@ -25,10 +25,13 @@ class MyApp extends StatelessWidget {
         ),
         /* Provider cho Message */
         ChangeNotifierProxyProvider<Auth, MessageProvider>(
-          create: (_) => MessageProvider('', ''),
+          create: (_) => MessageProvider('', '', []),
           update: (ctx, auth, previousMessageProvider) => MessageProvider(
             auth.token,
             auth.userId,
+            previousMessageProvider == null
+                ? []
+                : previousMessageProvider.friends,
           ),
         ),
       ],

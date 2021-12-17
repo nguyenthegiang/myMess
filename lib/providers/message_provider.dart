@@ -12,10 +12,11 @@ class MessageProvider with ChangeNotifier {
   //String để lưu giữ Token khi Authentication
   final String? authToken;
   final String? userId;
+  List<User> friends = [];
 
   /*nhận token qua constructor 
   (truyền vào trong main.dart ở Provider khi khởi tạo Object)*/
-  MessageProvider(this.authToken, this.userId);
+  MessageProvider(this.authToken, this.userId, this.friends);
 
   /* function để lấy userID dựa trên username -> làm senderID khi tạo tin nhắn
   mới, trả về userID đó*/
@@ -73,7 +74,7 @@ class MessageProvider with ChangeNotifier {
   }
 
   /* Function để lấy những list người đã nhắn tin với mình -> Hiển thị List Message */
-  Future<List<User>> getFriends() async {
+  Future<void> getFriends() async {
     //list lưu những message tới mình hoặc mình gửi đi -> từ đó lọc ra friend
     List<Message> listMess = [];
 
@@ -109,15 +110,18 @@ class MessageProvider with ChangeNotifier {
 
     /*với mỗi ID trong friendIDList thì tìm ra username tương ứng và thêm vào
     friendList*/
-    friendIDList.forEach((userID) async {
+    for (var userID in friendIDList) {
       String username = await getUsernameByUserID(userID);
       friendList.add(User(
         userID: userID,
         username: username,
       ));
-    });
+    }
 
-    return friendList;
+    //gán vào attribute
+    friends = friendList;
+
+    notifyListeners();
   }
 
   /* function để lấy những message có mình là sender hoặc receiver từ server */

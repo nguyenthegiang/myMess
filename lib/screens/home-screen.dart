@@ -18,13 +18,10 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   //function để refresh lại list friends
   Future<void> _refreshFriendList(BuildContext context) async {
-    List<User> friends = await Provider.of<MessageProvider>(
+    await Provider.of<MessageProvider>(
       context,
       listen: false,
     ).getFriends();
-    //Lỗi: list rỗng
-    Future.delayed(Duration.zero);
-    print(friends);
   }
 
   @override
@@ -57,67 +54,71 @@ class _HomeScreenState extends State<HomeScreen> {
               )
             : RefreshIndicator(
                 onRefresh: () => _refreshFriendList(context),
-                child: Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: ListView(
-                    children: [
-                      //Searchbox - Not implemented yet
-                      Padding(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 10,
-                          vertical: 8,
-                        ),
-                        child: TextField(
-                          decoration: InputDecoration(
-                            border: OutlineInputBorder(
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(50)),
+                child: Consumer<MessageProvider>(
+                  builder: (ctx, messageData, _) => Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: ListView(
+                      children: [
+                        //Searchbox - Not implemented yet
+                        Padding(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 10,
+                            vertical: 8,
+                          ),
+                          child: TextField(
+                            decoration: InputDecoration(
+                              border: OutlineInputBorder(
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(50)),
+                              ),
+                              hintText: 'Tìm kiếm (Tính năng này chưa hỗ trợ)',
+                              prefixIcon: Icon(Icons.search),
                             ),
-                            hintText: 'Tìm kiếm (Tính năng này chưa hỗ trợ)',
-                            prefixIcon: Icon(Icons.search),
                           ),
                         ),
-                      ),
 
-                      /*Message List - sau này chuyển thành ListView.builder và 
-                      ListTile tách ra Widget riêng*/
-                      Container(
-                        height: MediaQuery.of(context).size.height -
-                            MediaQuery.of(context).padding.top -
-                            150,
-                        child: ListView(
-                          children: [
-                            Card(
-                              elevation: 5,
-                              child: ListTile(
-                                title: Text('Nguyen The Giang'),
-                                subtitle: Text('Message sent'),
-                                leading: CircleAvatar(
-                                  backgroundImage: AssetImage(
-                                      'assets/images/default-avatar.png'),
-                                ),
-                                trailing: Icon(Icons.check_circle),
-                              ),
+                        /*Message List*/
+                        Container(
+                          height: MediaQuery.of(context).size.height -
+                              MediaQuery.of(context).padding.top -
+                              150,
+                          child: ListView.builder(
+                            itemCount: messageData.friends.length,
+                            itemBuilder: (_, i) => MessageItem(
+                              user: messageData.friends[i],
                             ),
-                            Card(
-                              elevation: 5,
-                              child: ListTile(
-                                title: Text('Nguyen The Giang'),
-                                subtitle: Text('Message sent'),
-                                leading: CircleAvatar(
-                                  backgroundImage: AssetImage(
-                                      'assets/images/default-avatar.png'),
-                                ),
-                                trailing: Icon(Icons.check_circle),
-                              ),
-                            ),
-                          ],
+                          ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
                 ),
               ),
+      ),
+    );
+  }
+}
+
+//Hiển thị 1 MessageItem trong Home Screen
+class MessageItem extends StatelessWidget {
+  final User user;
+
+  const MessageItem({
+    Key? key,
+    required this.user,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      elevation: 5,
+      child: ListTile(
+        title: Text(user.username),
+        subtitle: Text('Message sent'),
+        leading: CircleAvatar(
+          backgroundImage: AssetImage('assets/images/default-avatar.png'),
+        ),
+        trailing: Icon(Icons.check_circle),
       ),
     );
   }
