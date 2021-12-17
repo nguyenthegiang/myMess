@@ -12,7 +12,12 @@ class MessageProvider with ChangeNotifier {
   //String để lưu giữ Token khi Authentication
   final String? authToken;
   final String? userId;
+  //list friends cho Home Screen
   List<User> friends = [];
+  /*list message cho MessageDetailScreen 
+  (2 list vì tùy vào mình là ng gửi hay nhận mà hiển thị khác nhau)*/
+  List<Message> receivedMessages = [];
+  List<Message> sentMessages = [];
 
   /*nhận token qua constructor 
   (truyền vào trong main.dart ở Provider khi khởi tạo Object)*/
@@ -199,5 +204,79 @@ class MessageProvider with ChangeNotifier {
       print(error);
       rethrow;
     }
+  }
+
+  /* Lấy những tin nhắn chung giữa mình và 1 ng cụ thể để hiển thị trong
+  MessageDetailScreen */
+  Future<void> getPersonalMessages(String friendId) async {
+    //Lấy list những Message friend gửi
+    String filterString = 'orderBy="senderID"&equalTo="$friendId"';
+    String url =
+        'https://my-mess-39d32-default-rtdb.firebaseio.com/message.json?auth=$authToken&$filterString';
+    try {
+      final response = await http.get(
+        Uri.parse(url),
+      );
+      //decode data
+      final extractedData = json.decode(response.body) as Map<String, dynamic>?;
+      //null thì return luôn
+      if (extractedData == null) {
+        return;
+      }
+      //gán vào list message
+      extractedData.forEach((id, data) {
+        /*trong những message đó chỉ lấy những message có ng nhận là mình thôi
+        (phải làm thế này vì ko viết đc mấy cái query phức tạp)*/
+        if (data['receiverID'] == userId) {
+          receivedMessages.add(
+            Message(
+              messageContent: data['messageContent'],
+              senderId: data['senderID'],
+              receiverId: data['receiverID'],
+              timeStamp: DateTime.parse(data['timeStamp']),
+            ),
+          );
+        }
+      });
+    } catch (error) {
+      print(error);
+      rethrow;
+    }
+
+    //Lấy list những message gửi cho friend
+    filterString = 'orderBy="senderID"&equalTo="$userId"';
+    url =
+        'https://my-mess-39d32-default-rtdb.firebaseio.com/message.json?auth=$authToken&$filterString';
+    try {
+      final response = await http.get(
+        Uri.parse(url),
+      );
+      //decode data
+      final extractedData = json.decode(response.body) as Map<String, dynamic>?;
+      //null thì return luôn
+      if (extractedData == null) {
+        return;
+      }
+      //gán vào list message
+      extractedData.forEach((id, data) {
+        /*trong những message đó chỉ lấy những message có ng nhận là friend thôi
+        (phải làm thế này vì ko viết đc mấy cái query phức tạp)*/
+        if (data['receiverID'] == friendId) {
+          sentMessages.add(
+            Message(
+              messageContent: data['messageContent'],
+              senderId: data['senderID'],
+              receiverId: data['receiverID'],
+              timeStamp: DateTime.parse(data['timeStamp']),
+            ),
+          );
+        }
+      });
+    } catch (error) {
+      print(error);
+      rethrow;
+    }
+
+    notifyListeners();
   }
 }
