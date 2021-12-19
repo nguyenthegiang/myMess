@@ -21,6 +21,78 @@ class _MessageDetailScreenState extends State<MessageDetailScreen> {
   //biến để làm loading spinner
   var _isLoading = false;
 
+  /*Global Key để hỗ trợ interact với State của Form: GlobalKey là 1 Generic, 
+    mà type truyền vào là 1 State của Widget*/
+  final GlobalKey<FormState> _formKey = GlobalKey();
+  //Map để lưu giữ thông tin Form submit
+  Map<String, String> _messageData = {
+    'receiverID': '',
+    'messageContent': '',
+  };
+
+  //function để show cái error message nếu có khi submit
+  void _showErrorDialog(String message) {
+    showDialog(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: Text('An Error Occurred!'),
+        content: Text(message),
+        actions: [
+          TextButton(
+            onPressed: () {
+              Navigator.of(ctx).pop();
+              //ấn nút này thì đóng dialog
+            },
+            child: Text('Okay'),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Future<void> _submit(BuildContext context) async {
+    //validate
+    if (!_formKey.currentState!.validate()) {
+      return;
+    }
+    _formKey.currentState!.save();
+
+    setState(() {
+      _isLoading = true;
+    });
+
+    //submit
+    try {
+      //Lấy user trong argument từ named route
+      final user = ModalRoute.of(context)!.settings.arguments as User;
+      //Lấy friendID dựa trên User truyền vào
+      _messageData['receiverID'] = user.userID;
+
+      //Add Message vào DB
+      await Provider.of<MessageProvider>(
+        context,
+        listen: false,
+      ).addMessage(
+        _messageData['receiverID'] as String,
+        _messageData['messageContent'] as String,
+      );
+    } catch (error) {
+      //hiển thị thông báo lỗi
+      const errorMessage =
+          'Something gone wrong, please try again.\n(Probably incorrect username or Network Connection)';
+      _showErrorDialog(errorMessage);
+    }
+
+    setState(() {
+      _isLoading = false;
+    });
+
+    /* Submit xong thì load lại list message để thấy thay đổi -> gọi lại
+    didChangeDependencies() */
+    _isInit = true;
+    didChangeDependencies();
+  }
+
   @override
   void didChangeDependencies() {
     /* Khi mới vào screen thì load list message*/
@@ -131,6 +203,7 @@ class _MessageDetailScreenState extends State<MessageDetailScreen> {
 
                   //Input Message
                   Form(
+                    key: _formKey,
                     child: Container(
                       height: 80,
                       decoration: BoxDecoration(
@@ -160,7 +233,8 @@ class _MessageDetailScreenState extends State<MessageDetailScreen> {
                                 }
                               },
                               onSaved: (value) {
-                                //_messageData['messageContent'] = value as String;
+                                _messageData['messageContent'] =
+                                    value as String;
                               },
                             ),
                           ),
@@ -175,7 +249,9 @@ class _MessageDetailScreenState extends State<MessageDetailScreen> {
                             child: _isLoading
                                 ? CircularProgressIndicator()
                                 : IconButton(
-                                    onPressed: () {}, //_submit,
+                                    onPressed: () {
+                                      _submit(context);
+                                    },
                                     icon: Icon(
                                       Icons.send,
                                       size: 35,
