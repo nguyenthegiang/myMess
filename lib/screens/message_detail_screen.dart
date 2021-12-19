@@ -105,9 +105,10 @@ class _MessageDetailScreenState extends State<MessageDetailScreen> {
       //Lấy user trong argument từ named route
       final user = ModalRoute.of(context)!.settings.arguments as User;
       //gọi getPersonalMessages() để lấy list message từ server
-      Provider.of<MessageProvider>(context)
-          .getPersonalMessages(user.userID)
-          .then((_) {
+      Provider.of<MessageProvider>(
+        context,
+        listen: false,
+      ).getPersonalMessages(user.userID).then((_) {
         setState(() {
           //chuyển màn hình lại bình thường sau khi lấy data xong
           _isLoading = false;
@@ -138,6 +139,17 @@ class _MessageDetailScreenState extends State<MessageDetailScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Text(user.username),
+        actions: [
+          //Nhấn nút này để reload -> xem tin nhắn mới
+          IconButton(
+            onPressed: () {
+              _isInit = true;
+              didChangeDependencies();
+            },
+            icon: const Icon(Icons.refresh),
+            tooltip: 'Làm mới',
+          ),
+        ],
       ),
       body: _isLoading
           ? Center(
