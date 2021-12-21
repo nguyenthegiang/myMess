@@ -10,4 +10,5 @@ App Functions:
 ### Alpha Test Version 1.1
  - Fix bug: Internet connection
 
-
+## Beta Test
+ - Fix bug: Message Detail Screen: Pixel Overflow & Message repeate when select Input Message
