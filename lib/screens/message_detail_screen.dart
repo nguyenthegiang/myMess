@@ -30,8 +30,8 @@ class _MessageDetailScreenState extends State<MessageDetailScreen> {
     'messageContent': '',
   };
 
-  List<Message> receivedMessages = [];
-  List<Message> sentMessages = [];
+  //list cac message
+  List<Message> allMessages = [];
 
   //function để show cái error message nếu có khi submit
   void _showErrorDialog(String message) {
@@ -107,8 +107,7 @@ class _MessageDetailScreenState extends State<MessageDetailScreen> {
   //function để refresh lại list message
   void refreshListMessage() {
     //clear list message
-    receivedMessages.clear();
-    sentMessages.clear();
+    allMessages.clear();
 
     setState(() {
       //chuyển màn hình sang loading
@@ -134,12 +133,13 @@ class _MessageDetailScreenState extends State<MessageDetailScreen> {
     //Lấy user trong argument từ named route
     final user = ModalRoute.of(context)!.settings.arguments as User;
     //các list lưu giữ tin nhắn
-    receivedMessages =
+    List<Message> receivedMessages =
         Provider.of<MessageProvider>(context, listen: false).receivedMessages;
-    sentMessages =
+    List<Message> sentMessages =
         Provider.of<MessageProvider>(context, listen: false).sentMessages;
     //List lưu giữ tn của cả 2 list để cho vào hiển thị
-    List<Message> allMessages = receivedMessages;
+    allMessages.clear();
+    allMessages = receivedMessages;
     allMessages.addAll(sentMessages);
     //sắp xếp các Message theo thứ tự thời gian để hiển thị
     allMessages.sort((message1, message2) {
